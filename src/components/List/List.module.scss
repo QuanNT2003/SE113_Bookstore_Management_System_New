@@ -4,12 +4,14 @@
     background-color: white;
     border-radius: 16px;
     padding: 20px;
+    user-select: none;
 }
 
 .search-filter-container {
     display: flex;
     justify-content: center;
     align-items: center;
+    flex-wrap: wrap;
 
     .search-bar {
         flex: 1;
