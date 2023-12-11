@@ -70,13 +70,13 @@ const publicRoutes = [
         back: true,
     },
     {
-        path: '/imports/update',
+        path: '/imports/update/:id',
         component: UpdateImportProduct,
         title: 'Chỉnh sửa đơn nhập hàng',
         back: true,
     },
     {
-        path: '/imports/detail',
+        path: '/imports/detail/:id',
         component: InfoImportProduct,
         title: 'Chi tiết đơn nhập hàng',
         back: true,
@@ -94,13 +94,13 @@ const publicRoutes = [
         back: true,
     },
     {
-        path: '/checks/detail',
+        path: '/checks/detail/:id',
         component: InfoCheckProduct,
         title: 'Chi tiết đơn kiểm hàng',
         back: true,
     },
     {
-        path: '/checks/update',
+        path: '/checks/update/:id',
         component: UpdateCheckProduct,
         title: 'Chỉnh sửa đơn kiểm hàng',
         back: true,
@@ -125,13 +125,13 @@ const publicRoutes = [
     },
     // RETURN
     {
-        path: '/return/add',
+        path: '/return/add/:id',
         component: AddReturnProduct,
         title: 'Tạo đơn trả hàng',
         back: true,
     },
     {
-        path: '/return/detail',
+        path: '/return/detail/:id',
         component: InfoReturn,
         title: 'Chi tiết đơn trả hàng',
         back: true,
