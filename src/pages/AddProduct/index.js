@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Switch } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 
-import styles from './AddProduct.module.scss';
+import styles from './AddProduct.Module.scss';
 import Wrapper from '~/components/Wrapper';
 import Button from '~/components/Button';
 import Input from '~/components/Input';
