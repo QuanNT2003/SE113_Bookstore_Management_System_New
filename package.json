@@ -1,6 +1,9 @@
 {
   "name": "bookstore_management_system",
   "version": "0.1.0",
+  "jest": {
+    "setupFilesAfterEnv": ["E:/SE113/SE113_Bookstore_Management_System_New/jest.setup.js"]
+  },
   "private": true,
   "dependencies": {
     "@emotion/react": "^11.11.1",
