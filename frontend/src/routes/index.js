@@ -28,6 +28,7 @@ import ListSupplierGroup from '~/pages/ListSupplierGroup';
 import AddSupplier from '~/pages/AddSupplier';
 import InfoSupplier from '~/pages/InfoSupplier';
 import UpdateSupplier from '~/pages/UpdateSupplier';
+import Sale from '~/pages/Sale';
 
 const publicRoutes = [
     // ACCOUNT
@@ -192,6 +193,12 @@ const publicRoutes = [
         component: InfoReturn,
         title: 'Chi tiết đơn trả hàng',
         back: true,
+    },
+    // SALE
+    {
+        path: '/sales',
+        component: Sale,
+        layout: null,
     },
 ];
 
