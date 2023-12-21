@@ -29,6 +29,16 @@ import AddSupplier from '~/pages/AddSupplier';
 import InfoSupplier from '~/pages/InfoSupplier';
 import UpdateSupplier from '~/pages/UpdateSupplier';
 import Sale from '~/pages/Sale';
+import ListCustomer from '~/pages/ListCustomer';
+import AddCustomer from '~/pages/AddCustomer';
+import InfoCustomer from '~/pages/InfoCustomer';
+import UpdateCustomer from '~/pages/UpdateCustomer';
+import ListStaff from '~/pages/ListStaff';
+import AddStaff from '~/pages/AddStaff';
+import InfoStaff from '~/pages/InfoStaff';
+import SellReport from '~/pages/SellReport';
+import BillInfo from '~/pages/BillInfo';
+import EditBillInfo from '~/pages/EditBillInfo';
 
 const publicRoutes = [
     // ACCOUNT
@@ -48,6 +58,18 @@ const publicRoutes = [
         path: '/orders',
         component: ListOrder,
         title: 'Danh sách đơn hàng',
+    },
+    {
+        path: '/orders/detail/:id',
+        component: BillInfo,
+        title: 'Thông tin hoá đơn',
+        back: true,
+    },
+    {
+        path: '/orders/update/:id',
+        component: EditBillInfo,
+        title: 'Cập nhật hoá đơn',
+        back: true,
     },
     // PRODUCT
     {
@@ -199,6 +221,54 @@ const publicRoutes = [
         path: '/sales',
         component: Sale,
         layout: null,
+    },
+    // CUSTOMER
+    {
+        path: '/customers',
+        component: ListCustomer,
+        title: 'Danh sách khách hàng',
+    },
+    {
+        path: '/customers/add',
+        component: AddCustomer,
+        title: 'Thêm khách hàng',
+        back: true,
+    },
+    {
+        path: '/customers/detail/:id',
+        component: InfoCustomer,
+        title: 'Chi tiết khách hàng',
+        back: true,
+    },
+    {
+        path: '/customers/update/:id',
+        component: UpdateCustomer,
+        title: 'Cập nhật khách hàng',
+        back: true,
+    },
+    // STAFF
+    {
+        path: '/staffs',
+        component: ListStaff,
+        title: 'Danh sách nhân viên',
+    },
+    {
+        path: '/staffs/add',
+        component: AddStaff,
+        title: 'Thêm nhân viên',
+        back: true,
+    },
+    {
+        path: '/staffs/update/:id',
+        component: InfoStaff,
+        title: 'Thông tin nhân viên',
+        back: true,
+    },
+    // REPORT
+    {
+        path: '/reports/revenue',
+        component: SellReport,
+        title: 'Báo cáo bán hàng',
     },
 ];
 

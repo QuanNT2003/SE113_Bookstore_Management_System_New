@@ -76,20 +76,10 @@ function SideBar({ className, title }) {
                             },
                         ]}
                     />
-                    <SidebarDropdown
-                        state={title}
-                        icon={<FontAwesomeIcon icon={faUser} />}
+                    <SidebarButton
+                        to={'/customers'}
                         title={'Khách hàng'}
-                        items={[
-                            {
-                                title: 'Danh sách khách hàng',
-                                to: '/',
-                            },
-                            {
-                                title: 'Nhóm khách hàng',
-                                to: '/',
-                            },
-                        ]}
+                        icon={<FontAwesomeIcon icon={faUser} />}
                     />
                     <SidebarDropdown
                         state={title}
@@ -97,11 +87,11 @@ function SideBar({ className, title }) {
                         title={'Báo cáo'}
                         items={[
                             {
-                                title: 'Báo cáo doanh thu',
-                                to: '/',
+                                title: 'Báo cáo bán hàng',
+                                to: '/reports/revenue',
                             },
                             {
-                                title: 'Báo cáo lợi nhuận',
+                                title: 'Báo cáo nhập hàng',
                                 to: '/',
                             },
                         ]}
@@ -117,7 +107,7 @@ function SideBar({ className, title }) {
                         icon={<FontAwesomeIcon icon={faPercent} />}
                     />
                     <SidebarButton
-                        to={'/'}
+                        to={'/staffs'}
                         title={'Quản lý nhân viên'}
                         icon={<FontAwesomeIcon icon={faClipboardUser} />}
                     />
