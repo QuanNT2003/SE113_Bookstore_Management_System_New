@@ -42,14 +42,14 @@
     "babel-plugin-module-resolver": "^5.0.0",
     "customize-cra": "^1.0.0",
     "react-app-rewired": "^2.2.1",
-    "sass": "^1.69.5"
+    "sass": "^1.69.5",
+    "jest": "^27.0.0"
   },
   "scripts": {
     "start": "react-app-rewired start",
     "build": "react-app-rewired build",
-    "test": "react-app-rewired test",
-    "eject": "react-scripts eject",
-    "test:ci": "jest --ci"
+    "test": "jest",
+    "eject": "react-scripts eject"
   },
   "eslintConfig": {
     "extends": [
