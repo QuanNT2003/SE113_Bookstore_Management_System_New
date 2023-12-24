@@ -10,22 +10,25 @@ on:
     branches: [ "test_frontend" ]
 
 jobs:
-  build:
+  test:
 
     runs-on: ubuntu-latest
 
     strategy:
       matrix:
-        node-version: [14.1, 14.2, 14.3, 14.4]
+        node-version: [12.x , 14.1, 14.2, 14.3, 14.4]
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
     steps:
-    - uses: actions/checkout@v3
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v3
-      with:
-        node-version: ${{ matrix.node-version }}
-        cache: 'npm'
-    - run: cd frontend
-    - run: npm install
-    - run: npm test -- --watchAll
+      - uses: actions/checkout@v2
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14' # Or any version you're using
+      - name: Install dependencies
+        run: npm install
+        working-directory: ./frontend # Change to your frontend directory
+      - name: Run tests
+        run: npm test
+        working-directory: ./frontend # Change to your frontend directory
+      
