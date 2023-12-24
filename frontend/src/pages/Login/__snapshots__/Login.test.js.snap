@@ -1,0 +1,66 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Login Component Tests matches snapshot 1`] = `
+<DocumentFragment>
+  <div
+    class="container"
+  >
+    <div
+      class="login-form"
+    >
+      <div
+        class="form-logo"
+      >
+        <img
+          class="logo"
+          src="logo.png"
+        />
+        <h1>
+          Triple K
+        </h1>
+      </div>
+      <p
+        style="font-size: 14px; font-style: normal; font-weight: 700; text-align: center; width: 100%; margin-bottom: 2%;"
+      >
+        Đăng nhập vào cửa hàng của bạn
+      </p>
+      <div
+        class="login-text"
+      >
+        <input
+          id="account"
+          placeholder="Số điện thoại hoặc email"
+          type="text"
+        />
+        <div
+          class="input-border"
+        />
+      </div>
+      <div
+        class="login-text"
+      >
+        <input
+          id="password"
+          placeholder="Mật khẩu"
+          type="password"
+        />
+        <div
+          class="input-border"
+        />
+      </div>
+      <div
+        class="forgot-pass"
+      >
+        <p>
+          Quên mật khẩu
+        </p>
+      </div>
+      <button
+        class="login-btn"
+      >
+        ĐĂNG NHẬP
+      </button>
+    </div>
+  </div>
+</DocumentFragment>
+`;
