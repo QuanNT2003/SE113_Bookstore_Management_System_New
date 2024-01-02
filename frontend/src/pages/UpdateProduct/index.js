@@ -306,7 +306,7 @@ function UpdateProduct() {
 
             const fetchApi = async () => {
                 // console.log(productid.id)
-                const result = await ProductServices.UpdateProduct(newobj)
+                const result = await ProductServices.updateProduct(newobj)
                     .catch((err) => {
                         console.log(err);
                     });
@@ -315,6 +315,19 @@ function UpdateProduct() {
                         setLoading(false);
                         toastContext.notify(
                             'success',
+                            'Cập nhật sản phẩm thành công',
+                        );
+
+
+                        // console.log(obj)
+                    }, 2000);
+                }
+
+                else {
+                    setTimeout(() => {
+                        setLoading(false);
+                        toastContext.notify(
+                            'error',
                             'Cập nhật sản phẩm thành công',
                         );
 

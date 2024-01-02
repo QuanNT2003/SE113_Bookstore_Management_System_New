@@ -1,12 +1,12 @@
 import classNames from 'classnames/bind';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheck, faXmark } from '@fortawesome/free-solid-svg-icons';
-import styles from './ProductItem.module.scss';
+import styles from './ModalProduct.module.scss';
 
 const cx = classNames.bind(styles);
 const addCommas = (num) => num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 
-export const ProductItem = [
+const Item = [
     {
         name: 'Mã sản phẩm',
         grow: 2,
@@ -42,62 +42,7 @@ export const ProductItem = [
         ),
     },
     {
-        name: 'Trạng thái',
-        center: true,
-        minWidth: '180px',
-        cell: (row) => (
-            <div
-                className={cx({
-                    'product-state-container': true,
-                    'state-0': row.isActive === true ? false : true,
-                })}
-                data-tag="allowRowEvents"
-            >
-                <FontAwesomeIcon
-                    className={cx('product-state-icon')}
-                    icon={row.isActive === true ? faCheck : faXmark}
-                    data-tag="allowRowEvents"
-                />
-                <div className={cx('product-state')} data-tag="allowRowEvents">
-                    {row.isActive === true ? 'Đang giao dịch' : 'Ngừng giao dịch'}
-                </div>
-            </div>
-        ),
-    },
-    {
-        name: 'Loại sản phẩm',
-        center: true,
-        minWidth: '180px',
-        cell: (row) => (
-            <div
-                className={cx('product-type-container')}
-                data-tag="allowRowEvents"
-            >
-                <div className={cx('product-type')} data-tag="allowRowEvents">
-                    {row.categoryName}
-                </div>
-            </div>
-        ),
-    },
-    {
-        name: 'Giá bán',
-        text: 'salePrice',
-        sortable: true,
-        center: true,
-        cell: (row) => (
-            <div
-                className={cx('product-value-container')}
-                data-tag="allowRowEvents"
-            >
-                <div className={cx('product-value')} data-tag="allowRowEvents">
-                    {addCommas(row.salePrice)}
-                </div>
-            </div>
-        ),
-    },
-    {
-        name: 'Giá vốn',
-        text: 'purchasePrice',
+        name: 'Giá nhập',
         sortable: true,
         center: true,
         cell: (row) => (
@@ -113,7 +58,6 @@ export const ProductItem = [
     },
     {
         name: 'Tồn kho',
-        text: 'currentStock',
         sortable: true,
         center: true,
         cell: (row) => (
@@ -128,3 +72,5 @@ export const ProductItem = [
         ),
     },
 ];
+
+export default Item
