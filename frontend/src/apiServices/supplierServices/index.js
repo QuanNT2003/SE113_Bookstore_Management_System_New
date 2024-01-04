@@ -1,5 +1,28 @@
 import * as request from '~/utils/request';
 
+
+export const getAllSuppliersForList = async (params) => {
+    try {
+        const response = await request.getMethod('Suppliers?', {
+            params,
+            paramsSerializer: (params) => {
+                const serializedParams = Object.keys(params).map((key) => {
+                    return key + '=' + params[key];
+                }).join('&');
+
+                console.log(serializedParams);
+
+                return serializedParams;
+            },
+        });
+
+        return response;
+    } catch (error) {
+        return Promise.reject(error);
+    }
+}
+
+
 export const getAllSuppliers = async (pageNumber, pageSize) => {
     try {
         const res = await request.getMethod(`Suppliers?pageSize=${pageSize}&pageNumber=${pageNumber}&sortBy=supplierId&orderBy=asc`);
@@ -49,18 +72,11 @@ export const CreateSuppliers = async (obj) => {
     try {
         const res = await request.postMethod('Suppliers', obj);
 
-        return res;
-    } catch (error) {
-        return Promise.reject(error);
-    }
-}
-
-export const CreateSupplierGroup = async (obj) => {
-    try {
-        const res = await request.postMethod('SupplierGroups', obj);
+        console.log(obj);
 
         return res;
     } catch (error) {
         return Promise.reject(error);
     }
 }
+
