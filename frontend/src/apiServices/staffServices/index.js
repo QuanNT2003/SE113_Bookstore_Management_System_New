@@ -1,8 +1,8 @@
 import * as request from '~/utils/request';
 
-export const getAllSupplierGroups = async (params) => {
+export const getAllStaffs = async (params) => {
     try {
-        const response = await request.getMethod('SupplierGroups?', {
+        const response = await request.getMethod('Staffs?', {
             params,
             paramsSerializer: (params) => {
                 const serializedParams = Object.keys(params).map((key) => {
@@ -21,18 +21,18 @@ export const getAllSupplierGroups = async (params) => {
     }
 }
 
-export const CreateSupplierGroup = async (obj) => {
+export const getStaff = async (id) => {
     try {
-        const res = await request.postMethod('SupplierGroups', obj);
+        const res = await request.getMethod('Staffs/' + id);
         return res;
     } catch (error) {
         return Promise.reject(error);
     }
 }
 
-export const deleteSupplierGroups = async (items) => {
+export const createStaff = async (obj) => {
     try {
-        const res = await request.deleteMethod(`SupplierGroups?${items.map((item) => 'ids=' + item.supplierGroupId).join('&')}`);
+        const res = await request.postMethod('Staffs', obj);
         return res;
     } catch (error) {
         return Promise.reject(error);
