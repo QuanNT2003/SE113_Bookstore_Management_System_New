@@ -1,0 +1,42 @@
+name: .NET Core CI/CD
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v2
+      with:
+        dotnet-version: '3.1' # Replace with your .NET Core version
+
+    - name: Install dependencies
+      run: dotnet restore
+      working-directory: ./Backend/BookstoreCatchFunction
+
+    - name: Build
+      run: dotnet build --configuration Release --no-restore
+      working-directory: ./Backend/BookstoreCatchFunction
+
+    - name: Test
+      run: dotnet test --no-restore --verbosity normal
+      working-directory: ./Backend/BookstoreCatchFunction
+
+    - name: Publish
+      run: dotnet publish -c Release -o out
+      working-directory: ./Backend/BookstoreCatchFunction
+    - name: Deploy to Azure WebApp
+      uses: azure/webapps-deploy@v2
+      with:
+        app-name: 'Bookstore'
+        slot-name: 'Production' # Optional: if deploying to a specific slot
+        publish-profile: ${{ secrets.AzureAppService_PublishProfile }}
+        package: ./Backend/BookstoreCatchFunction/out
