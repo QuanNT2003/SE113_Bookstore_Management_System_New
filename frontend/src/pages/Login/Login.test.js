@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import Login from '../Login/index'; // Adjust the path to your Login component
+import Login from './index'; // Adjust the path to your Login component
 describe('Login Component Tests', () => {
 
     // test('login successful with correct credentials', async () => {
