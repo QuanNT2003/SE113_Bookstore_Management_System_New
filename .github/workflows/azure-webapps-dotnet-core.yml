@@ -53,7 +53,8 @@ jobs:
             ${{ runner.os }}-nuget-
 
       - name: Build with dotnet
-        run: dotnet build --configuration Release Backend/BookstoreWebAPI.sln
+        run: dotnet build --configuration Release BookstoreWWebAPI.sln
+        working-directory: ./Backend
 
       - name: dotnet publish
         run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp
