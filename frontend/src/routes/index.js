@@ -265,7 +265,7 @@ const publicRoutes = [
         back: true,
     },
     {
-        path: '/staffs/update/:id',
+        path: '/staffs/detail/:id',
         component: InfoStaff,
         title: 'Thông tin nhân viên',
         back: true,
