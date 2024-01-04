@@ -2,6 +2,7 @@ import classNames from 'classnames/bind';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheck, faXmark } from '@fortawesome/free-solid-svg-icons';
 import styles from './ProductItem.module.scss';
+import noImage from '~/assets/images/no-image.png';
 
 const cx = classNames.bind(styles);
 const addCommas = (num) => num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
@@ -13,14 +14,14 @@ export const ProductItem = [
         minWidth: '250px',
         cell: (row) => (
             <div
-                key={row.id}
+                key={row.productId}
                 className={cx('product-code-container')}
                 data-tag="allowRowEvents"
             >
                 <div
                     className={cx('product-img')}
                     style={{
-                        backgroundImage: `url('${row.image[0]}')`,
+                        backgroundImage: `url('${row.images[0] ? row.images[0] : noImage}')`,
                     }}
                     data-tag="allowRowEvents"
                 ></div>
@@ -29,7 +30,7 @@ export const ProductItem = [
                     data-tag="allowRowEvents"
                 >
                     <div className={cx('product-id')} data-tag="allowRowEvents">
-                        {row.id}
+                        {row.productId}
                     </div>
                     <div
                         className={cx('product-name')}
@@ -49,17 +50,17 @@ export const ProductItem = [
             <div
                 className={cx({
                     'product-state-container': true,
-                    'state-0': row.status === 1 ? false : true,
+                    'state-0': row.isActive === true ? false : true,
                 })}
                 data-tag="allowRowEvents"
             >
                 <FontAwesomeIcon
                     className={cx('product-state-icon')}
-                    icon={row.status === 1 ? faCheck : faXmark}
+                    icon={row.isActive === true ? faCheck : faXmark}
                     data-tag="allowRowEvents"
                 />
                 <div className={cx('product-state')} data-tag="allowRowEvents">
-                    {row.status === 1 ? 'Đang giao dịch' : 'Ngừng giao dịch'}
+                    {row.isActive === true ? 'Đang giao dịch' : 'Ngừng giao dịch'}
                 </div>
             </div>
         ),
@@ -74,13 +75,14 @@ export const ProductItem = [
                 data-tag="allowRowEvents"
             >
                 <div className={cx('product-type')} data-tag="allowRowEvents">
-                    {row.type_name}
+                    {row.categoryText}
                 </div>
             </div>
         ),
     },
     {
         name: 'Giá bán',
+        text: 'salePrice',
         sortable: true,
         center: true,
         cell: (row) => (
@@ -89,13 +91,14 @@ export const ProductItem = [
                 data-tag="allowRowEvents"
             >
                 <div className={cx('product-value')} data-tag="allowRowEvents">
-                    {addCommas(row.price)}
+                    {addCommas(row.salePrice)}
                 </div>
             </div>
         ),
     },
     {
         name: 'Giá vốn',
+        text: 'purchasePrice',
         sortable: true,
         center: true,
         cell: (row) => (
@@ -104,13 +107,14 @@ export const ProductItem = [
                 data-tag="allowRowEvents"
             >
                 <div className={cx('product-value')} data-tag="allowRowEvents">
-                    {addCommas(row.cost)}
+                    {addCommas(row.purchasePrice)}
                 </div>
             </div>
         ),
     },
     {
         name: 'Tồn kho',
+        text: 'currentStock',
         sortable: true,
         center: true,
         cell: (row) => (
@@ -119,7 +123,7 @@ export const ProductItem = [
                 data-tag="allowRowEvents"
             >
                 <div className={cx('product-value')} data-tag="allowRowEvents">
-                    {addCommas(row.quantity)}
+                    {addCommas(row.currentStock)}
                 </div>
             </div>
         ),

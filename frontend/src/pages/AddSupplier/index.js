@@ -1,4 +1,4 @@
-import { useState, useContext } from 'react';
+import { useState, useContext, useEffect } from 'react';
 import classNames from 'classnames/bind';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -11,7 +11,7 @@ import Input from '~/components/Input';
 import ModalComp from '~/components/ModalComp';
 import ModalLoading from '~/components/ModalLoading';
 import { ToastContext } from '~/components/ToastContext';
-
+import * as SuppliersServices from '~/apiServices/supplierServices';
 const cx = classNames.bind(styles);
 
 function AddSupplier() {
@@ -25,7 +25,10 @@ function AddSupplier() {
     const [email, setEmail] = useState('');
     const [group, setGroup] = useState('');
     const [address, setAddress] = useState('');
-
+    const [option, setOption] = useState([])
+    const [groupIDlist, setGroupIDlist] = useState([])
+    const [groupID, setGroupID] = useState('')
+    const [call, setCall] = useState(false)
     // MODAL LOADING
     const [loading, setLoading] = useState(false);
 
@@ -35,17 +38,82 @@ function AddSupplier() {
             setErrorName('Không được bỏ trống');
         } else {
             // CALL API
-            setLoading(true);
-            setTimeout(() => {
-                setLoading(false);
-                toastContext.notify('success', 'Thêm nhà cung cấp thành công');
-            }, 2000);
+            const obj = {
+                name: name,
+                supplierGroupId: groupID,
+                supplierGroupName: group,
+                contact: {
+                    phone: phone,
+                    email: email
+                },
+                address: address,
+                description: null,
+            }
+            // setLoading(true);
+
+
+            const fetchApi = async () => {
+                const result = await SuppliersServices.CreateSuppliers(obj)
+                    .catch((err) => {
+                        console.log(err);
+                    });
+
+                if (result) {
+                    setTimeout(() => {
+                        setLoading(false);
+                        toastContext.notify('success', 'Thêm nhà cung cấp thành công');
+                    }, 2000);
+                }
+
+                else {
+                    setTimeout(() => {
+                        setLoading(false);
+                        toastContext.notify('error', 'Đã có lỗi');
+                    }, 2000);
+                }
+                console.log(obj)
+            }
+
+            fetchApi();
+
+
         }
     };
 
     const handleExit = () => {
         navigate(-1);
     };
+
+    useEffect(() => {
+        if (call === false) {
+            const fetchApi = async () => {
+                const result = await SuppliersServices.getAllSupplierGroups(1, -1)
+                    .catch((err) => {
+                        console.log(err);
+                    });
+
+                console.log(result.data)
+                result.data.map((e) => {
+                    if (call === false) {
+                        setOption(op => [...op, e.name])
+                        setGroupIDlist(op => [...op, e.supplierGroupId])
+                    }
+                    setCall(true)
+
+
+                })
+
+            }
+            fetchApi()
+        }
+    }, [option]);
+
+    const onChoosegroup = (value) => {
+        option.map((e, index) => {
+            if (e === value) setGroupID(groupIDlist[index])
+        })
+        setGroup(value)
+    }
 
     // MODAL ADD GROUP
     const [open, setOpen] = useState(false);
@@ -123,9 +191,9 @@ function AddSupplier() {
                                 <div className={cx('two-cols', 'm-b')}>
                                     <Input
                                         title={'Nhóm nhà cung cấp'}
-                                        items={['Sách', 'Khác']}
+                                        items={option}
                                         value={group}
-                                        onChange={(value) => setGroup(value)}
+                                        onChange={(value) => onChoosegroup(value)}
                                         readOnly
                                     />
                                     <Button

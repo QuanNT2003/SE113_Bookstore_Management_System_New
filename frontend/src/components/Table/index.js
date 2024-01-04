@@ -91,6 +91,13 @@ function Table({
     onRowClicked,
     selectableRows,
     pagination,
+    clearSelectedRows,
+    // PAGINATION REMOTE
+    totalRows,
+    handlePerRowsChange,
+    handlePageChange,
+    // SORT REMOTE
+    handleSort,
 }) {
     return (
         <div className={cx('data-table-container')}>
@@ -125,7 +132,9 @@ function Table({
                 subHeaderComponent={subHeaderComponent}
                 // ONCLICK ROW
                 onRowClicked={onRowClicked}
-                // SORT
+                // SORT REMOTE
+                sortServer
+                onSort={handleSort}
                 sortIcon={
                     <FontAwesomeIcon
                         className={cx('icon-margin')}
@@ -133,6 +142,7 @@ function Table({
                     />
                 }
                 // SELECT
+                clearSelectedRows={clearSelectedRows}
                 selectableRows={selectableRows}
                 selectableRowsVisibleOnly
                 selectableRowsHighlight={true}
@@ -140,8 +150,16 @@ function Table({
                 selectableRowsComponentProps={selectProps}
                 onSelectedRowsChange={handleSelectedItems}
                 // PAGINATION
+
+                // REMOTE 
+                paginationServer
+                paginationTotalRows={totalRows}
+                onChangeRowsPerPage={handlePerRowsChange}
+                onChangePage={handlePageChange}
+
+
                 pagination={pagination}
-                paginationPerPage={20}
+                paginationPerPage={12}
                 paginationComponentOptions={{
                     rowsPerPageText: 'Hiển thị: ',
                     rangeSeparatorText: 'trên',
@@ -149,7 +167,7 @@ function Table({
                     selectAllRowsItem: false,
                     selectAllRowsItemText: 'Tất cả',
                 }}
-                paginationRowsPerPageOptions={[20, 50, 100]}
+                paginationRowsPerPageOptions={[12, 24, 48]}
                 paginationIconNext={<FontAwesomeIcon icon={faAngleRight} />}
                 paginationIconPrevious={<FontAwesomeIcon icon={faAngleLeft} />}
                 paginationIconLastPage={

@@ -6,7 +6,7 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
 import { NavLink } from 'react-router-dom';
-import { useState, useEffect } from 'react';
+import { useEffect, useState, useContext } from 'react';
 import { data } from '../InfoCheckProduct/data';
 import Spinner from 'react-bootstrap/Spinner';
 import Pagination from 'react-bootstrap/Pagination';
@@ -19,31 +19,22 @@ import MultiSelectModal from '~/components/MultiSelectModal';
 import { FaArrowUpFromBracket } from "react-icons/fa6";
 import { FaCloudArrowDown } from "react-icons/fa6";
 import { options2 } from '../ImportProduct/data';
+import { ToastContext } from '~/components/ToastContext';
+import ModalLoading from '~/components/ModalLoading';
 const cx = classNames.bind(styles);
 
 
 
 function UpdateCheckProduct() {
+    const toastContext = useContext(ToastContext);
+    const [loading, setLoading] = useState(false);
     const checkproductid = useParams()
     const [obj, setObj] = useState(data)
     const [list, setList] = useState(obj.list)
     const [PerPage, setPerPage] = useState(20);
     const [currentPage, setcurrentPage] = useState(1);
 
-    const numofTotalPage = Math.ceil(list.length / PerPage);
-    const pages = [...Array(numofTotalPage + 1).keys()].slice(1);
 
-    const indexOflastPd = currentPage * PerPage;
-    const indexOffirstPd = indexOflastPd - PerPage;
-
-    const visible = list.slice(indexOffirstPd, indexOflastPd);
-    const prevPage = () => {
-        if (currentPage !== 1) setcurrentPage(currentPage - 1);
-    }
-
-    const nextPage = () => {
-        if (currentPage !== numofTotalPage) setcurrentPage(currentPage + 1);
-    }
 
     const [show, setShow] = useState(false);
     const handleClose = () => {
@@ -55,10 +46,33 @@ function UpdateCheckProduct() {
     const handleShow = () => setShow(true);
 
     const submit = () => {
-        let newobj = obj;
-        newobj.list = list;
-        setObj(newobj)
-        console.log(obj)
+        if (list.length === 0) {
+            setLoading(true);
+            setTimeout(() => {
+                setLoading(false);
+                toastContext.notify('error', 'Chưa chọn sản phẩm');
+            }, 2000);
+        }
+        else {
+            setLoading(true);
+            setTimeout(() => {
+                setLoading(false);
+                toastContext.notify('success', 'Đã cân bằng kho');
+            }, 2000);
+            let newobj = obj;
+            newobj.list = list;
+            setObj(newobj)
+            console.log(obj)
+        }
+
+    }
+
+    const deleteform = () => {
+        setLoading(true);
+        setTimeout(() => {
+            setLoading(false);
+            toastContext.notify('success', 'Đã xóa phiếu');
+        }, 2000);
     }
     const addarr = (value) => {
 
@@ -148,9 +162,9 @@ function UpdateCheckProduct() {
                                         </div>
                                         <div className={cx('list-import')}>
                                             {
-                                                visible.map((item, index) => (
+                                                list.map((item, index) => (
                                                     <div className={`${cx('item')}`} key={item.id}>
-                                                        <Item_Check product={item} index={index + (currentPage - 1) * PerPage + 1} funtion={deletearr} />
+                                                        <Item_Check product={item} index={index + 1} funtion={deletearr} />
                                                     </div>
                                                 ))
                                             }
@@ -158,47 +172,10 @@ function UpdateCheckProduct() {
 
 
                                     </div>
-                                    <Row className='mt-3 me-3'>
-                                        <Col xs md={8} className='d-flex  justify-content-end'>
 
-                                            <p className='mt-2 me-2'>Hiển thị</p>
-                                            <Form.Select aria-label="Default select example" placeholder='Loai san pham' className={cx('form-select')}
-                                                onChange={(e) => {
-                                                    setPerPage(parseInt(e.target.value))
-                                                    setcurrentPage(1)
-                                                }}>
-
-                                                <option value="20">20</option>
-                                                <option value="50">50</option>
-                                                <option value="100">100</option>
-                                            </Form.Select>
-
-
-                                        </Col>
-                                        <Col xs md={4}>
-                                            <Pagination className=' justify-content-end'>
-                                                <Pagination.Prev onClick={prevPage} />
-                                                {
-                                                    pages.map(page => (
-                                                        <Pagination.Item
-                                                            key={page}
-                                                            onClick={() => setcurrentPage(page)}
-                                                            className={(currentPage === page) ? "active" : ""}>
-                                                            {page}</Pagination.Item>
-                                                    ))
-                                                }
-                                                <Pagination.Next onClick={nextPage} />
-                                            </Pagination>
-                                        </Col>
-                                    </Row>
                                     <Row>
                                         <Col className='mt-4 text-end me-4'>
-                                            <Button className={`m-1 ${cx('my-btn')}`} variant="outline-danger" >Xóa</Button>
-                                            <Button className={`m-1 ${cx('my-btn')}`} variant="outline-primary">
-                                                <NavLink to={"/updatecheckproduct/" + checkproductid.id} className={`text-decoration-none ${cx('nav-link')}`} >
-                                                    Sửa
-                                                </NavLink>
-                                            </Button>
+                                            <Button className={`m-1 ${cx('my-btn')}`} variant="outline-danger" onClick={() => deleteform()}>Xóa</Button>
                                             <Button className={`m-1 ${cx('my-btn')}`} variant="primary" onClick={() => submit()}>Cân bằng kho</Button>
 
                                         </Col>
@@ -254,6 +231,7 @@ function UpdateCheckProduct() {
                             </Button>
                         </Modal.Footer>
                     </Modal>
+                    <ModalLoading open={loading} title={'Đang tải'} />
                 </div>
             </div >
         </div>

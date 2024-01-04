@@ -1,84 +1,93 @@
 .container {
-    width: 100vw;
     height: 100vh;
+    width: 100vw;
+    display: flex;
+    flex-direction: column;
+    background-image: url('../../assets/images/profile-bg.jpg');
+    background-repeat: no-repeat;
+    background-position: 0 0;
+    background-size: cover;
 }
 .header-and-content {
     width: 100%;
     height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 }
 //header
 .header {
     width: 100%;
     height: 7%;
+    max-height: 45px;
+    min-height: 40px;
 }
 //content
 .content {
-    width: 100%;
-    height: 91%;
+    // margin-top: 3%;
+    width: 70%;
+    height: 80%;
     display: flex;
     align-items: center;
+    // background-color: #fff;
+    border-radius: 10px;
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
 }
 //khối 1
 .content1 {
-    height: 70%;
+    height: 100%;
     width: 30%;
-    margin-left: 4%;
-    border-radius: 10px;
-    border: 1px solid #c4ccde;
-    background: #fff;
-    margin-right: 15px;
+    border-radius: 10px 0 0 10px;
+    background: #366577;
     display: flex;
     align-items: center;
     flex-direction: column;
+    border: none;
+    min-width: 220px;
 }
-.content1 h3 {
-    height: fit-content;
-    font-size: 18px;
-    margin-top: 5px;
-    text-indent: 10px;
-    width: 100%;
-}
-.details {
-    height: fit-content;
-    font-size: 13px;
-    margin-top: 5px;
-    text-indent: 10px;
-    width: 100%;
-    color: #637381;
-}
-//profile-card
+
 .profile-card {
     width: 90%;
-    height: 35%;
-    margin-top: 6%;
+    height: 40%;
+    margin-top: 50px;
     align-items: center;
     display: flex;
     justify-content: center;
 }
 .profile-avt {
-    height: 150px;
-    width: 150px;
-    border-radius: 20px;
+    height: 165px;
+    width: 165px;
+    border-radius: 150px;
+    border: 1px solid #cdcdcd;
 }
 .infor-card {
-    height: 150px;
     width: 50%;
-    margin-left: 20px;
+    min-width: 180px;
+    margin-top: 10px;
     align-items: center;
     justify-content: center;
     display: flex;
     flex-direction: column;
 }
+//input thêm ảnh
 .input-file {
     height: 45px;
     width: 90%;
     background-color: #fff;
-    border: #c4ccde 2px solid;
+    // border: #c4ccde 2px solid;
     border-radius: 4px;
     position: relative;
     display: flex;
     justify-content: center;
     align-items: center;
+}
+.input-file p {
+    color: #366577;
+    font-weight: 550;
+}
+.input-file input {
+    cursor: pointer;
 }
 .profile-tag {
     width: 90%;
@@ -90,28 +99,75 @@
     display: flex;
     align-items: center;
 }
-//icon
-.icon-phone {
+//khối 2
+.content2 {
+    height: 100%;
+    width: 70%;
+    border-radius: 0 10px 10px 0;
+    // border: 1px solid #c4ccde;
+    background: #fff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.input-text-container {
     height: 50%;
-    width: 15%;
-    color: #31518c;
+    width: 90%;
+    margin-top: 70px;
+    display: grid;
+    grid-template-columns: 50% 50%;
+    grid-template-rows: 33% 33% 33%;
+    gap: 5px;
 }
-.icon-mail {
-    height: 70%;
-    width: 15%;
-    color: #31518c;
+.btn-c {
+    height: 60px;
+    width: 90%;
+    display: flex;
+    justify-content: right;
 }
-.icon-cloud {
-    height: 28px;
-    width: 40px;
-    color: #c4ccde;
+.btn-c button {
+    width: 100px;
+    height: 45px;
+    border-radius: 4px;
+    background-color: #366577;
+    color: #fff;
+    font-weight: 500;
+    margin-top: 15px;
+    &:hover {
+        background-color: #508597;
+    }
 }
-//thẻ văn bản trong content 1
-.profile-tag p {
-    font-weight: 400;
-    height: fit-content;
-    margin-left: 5px;
+.grid-content {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+.grid-content p {
     font-size: 14px;
+    height: fit-content;
+    width: 100%;
+}
+.text-inp {
+    width: 100%;
+    height: 45px;
+    min-height: 45px;
+    border-radius: 4px;
+    border: 1px solid #cdcdcd;
+    background: #fff;
+    text-indent: 10px;
+    font-size: 14px;
+    &:hover {
+        border-radius: 4px;
+        border: 1px solid #508597;
+        background: #fff;
+        color: #508597;
+    }
+    &:focus {
+        border-radius: 4px;
+        border: 1px solid #366577;
+        background: #fff;
+    }
+    outline: none;
 }
 .infor-card h1 {
     font-size: 27px;
@@ -124,11 +180,17 @@
     font-size: 14px;
     position: relative;
 }
-//input file
+.icon-cloud {
+    height: 28px;
+    width: 40px;
+    color: #366577;
+    cursor: pointer;
+}
 .input-file p {
     font-size: 14px;
     height: fit-content;
     width: fit-content;
+    cursor: pointer;
 }
 .input-file input {
     opacity: 0;
@@ -136,62 +198,72 @@
     width: 100%;
     height: 100%;
 }
-//khối 2
-.content2 {
-    height: 70%;
-    width: 60%;
-    border-radius: 10px;
-    border: 1px solid #c4ccde;
-    background: #fff;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-//input text
-.input-text-container {
-    height: 70%;
-    width: 90%;
-    margin-top: 40px;
-    display: grid;
-    grid-template-columns: 50% 50%;
-    grid-template-rows: 33% 33% 33%;
-    gap: 5px;
-}
-.grid-content {
-    display: flex;
-    flex-direction: column;
-}
-.text-inp {
-    width: 100%;
-    height: 45px;
-    border-radius: 4px;
-    border: 1px solid #c4ccde;
-    background: #fff;
-    text-indent: 10px;
+.profile-tag p {
+    font-weight: 400;
+    height: fit-content;
+    margin-left: 5px;
     font-size: 14px;
-    &:hover {
-        border-radius: 4px;
-        border: 2px solid #555555;
-        background: #fff;
-    }
-    &:focus {
-        border-radius: 4px;
-        border: 2px solid #007bff;
-        background: #fff;
-    }
-    outline: none;
 }
-//thẻ văn bản trong khối 2
 .content2 h3 {
     height: fit-content;
-    font-size: 18px;
-    margin-top: 5px;
-    text-indent: 10px;
+    font-size: 20px;
+    margin-top: 15px;
+    text-indent: 15px;
     width: 100%;
 }
-//văn bản trong grid
-.grid-content p {
-    font-size: 14px;
+.details {
     height: fit-content;
+    font-size: 13px;
+    margin-top: 5px;
+    text-indent: 15px;
     width: 100%;
+    color: #637381;
+}
+
+@media screen and (min-width: 840px) {
+    .content {
+        height: 488px;
+    }
+    .container {
+        min-height: 500px;
+        overflow: auto;
+    }
+}
+@media screen and (max-width: 839px) {
+    .container {
+        min-height: 770px;
+        overflow: auto;
+    }
+    .content {
+        display: flex;
+        flex-direction: column;
+        box-shadow: none;
+    }
+    .content1 {
+        width: 355px;
+        min-height: 190px;
+        border-radius: 10px;
+    }
+
+    .profile-card {
+        margin-top: 0;
+        height: 130px;
+    }
+    .profile-avt {
+        width: 110px;
+        height: 110px;
+    }
+    .content2 {
+        border-radius: 10px;
+        margin-top: 10px;
+        min-height: 460px;
+        width: 355px;
+    }
+    .input-text-container {
+        margin-top: 0;
+        display: flex;
+        flex-direction: column;
+        overflow: auto;
+        height: 280px;
+    }
 }

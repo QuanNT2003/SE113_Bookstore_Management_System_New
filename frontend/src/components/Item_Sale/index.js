@@ -13,20 +13,21 @@ function Item_Sale({ product, index, funtion, update }) {
     useEffect(() => {
 
         setObj(product)
+        setTotal(product.salePrice)
 
     }, [obj]);
 
     const totalValue = () => {
         let newObj = obj;
-        newObj['total'] = newObj['nums'] * newObj['cost'];
-        setTotal(newObj['nums'] * newObj['cost']);
+        newObj['totalPrice'] = newObj['quantity'] * newObj['salePrice'];
+        setTotal(newObj['quantity'] * newObj['salePrice']);
         setObj(newObj)
         update()
     }
 
     const ChangreNums = (value) => {
         let newObj = obj;
-        newObj['nums'] = parseInt(value);
+        newObj['quantity'] = parseInt(value);
         setObj(newObj)
         totalValue()
     }
@@ -36,7 +37,7 @@ function Item_Sale({ product, index, funtion, update }) {
                 {index}
             </div>
             <div className={cx('properties-1')}>
-                <img src={product.img} className={cx('img')} />
+                <img src={product.featureImageUrl} className={cx('img')} />
             </div>
             <div className={cx('properties-1')}>
                 <div>{product.sku}</div>
@@ -46,7 +47,7 @@ function Item_Sale({ product, index, funtion, update }) {
             </div>
             <div className={`${cx('properties-3')}`}>
 
-                <input className={cx('textfield')} type="number" min={0} max={product.stock} onChange={(e) => {
+                <input className={cx('textfield')} type="number" min={0} max={product.stock} defaultValue={product.quantity} onChange={(e) => {
                     if (e.target.value > product.stock) e.target.value = product.stock;
                     else if (e.target.value < 0 || e.target.value === '') e.target.value = 0;
 
@@ -55,14 +56,14 @@ function Item_Sale({ product, index, funtion, update }) {
             </div>
 
             <div className={cx('properties-3')}>
-                <div>{addCommas(product.cost)}</div>
+                <div>{addCommas(product.salePrice)}</div>
             </div>
 
             <div className={cx('properties-3')}>
                 {addCommas(total)}
             </div>
             <div className={cx('properties-1')}>
-                <FaTrashCan className={cx('icon')} onClick={(e) => funtion(product.id, index)} />
+                <FaTrashCan className={cx('icon')} onClick={(e) => funtion(product.productId, index)} />
             </div>
 
         </div>

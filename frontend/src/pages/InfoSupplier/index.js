@@ -13,7 +13,10 @@ import ModalLoading from '~/components/ModalLoading';
 import { ToastContext } from '~/components/ToastContext';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheck, faXmark } from '@fortawesome/free-solid-svg-icons';
-
+import * as SuppliersServices from '~/apiServices/supplierServices';
+import * as PurchaseorderServices from '~/apiServices/purchaseorderServies';
+import Spinner from 'react-bootstrap/Spinner';
+import { useParams } from 'react-router-dom';
 const cx = classNames.bind(styles);
 
 const supplier = {
@@ -26,22 +29,36 @@ const supplier = {
     isActive: true,
 };
 
+
 function InfoSupplier() {
     const toastContext = useContext(ToastContext);
+    const [obj, setObj] = useState(null);
+    const suppliertid = useParams();
+
 
     useEffect(() => {
-        setName(supplier.name);
-        setPhone(supplier.phone);
-        setEmail(supplier.email);
-        setAddress(supplier.address);
+        const fetchApi = async () => {
+            // console.log(productid.id)
+
+            const result = await SuppliersServices.getSupplier(suppliertid.id)
+                .catch((err) => {
+                    console.log(err);
+                });
+            setObj(result);
+
+
+            const resultlist = await PurchaseorderServices.getPurchaseOrderFromSupplier(result.supplierId)
+                .catch((err) => {
+                    console.log(err);
+                });
+            setRows(resultlist.data)
+            console.log(rows)
+            setPending(false);
+        }
+
+        fetchApi();
     }, []);
 
-    // PROPS
-    const [name, setName] = useState('');
-    const [phone, setPhone] = useState('');
-    const [email, setEmail] = useState('');
-    const [group, setGroup] = useState('');
-    const [address, setAddress] = useState('');
 
     const navigate = useNavigate();
     const handleExit = () => {
@@ -50,20 +67,14 @@ function InfoSupplier() {
 
     // ON ROW CLICKED
     const onRowClicked = useCallback((row) => {
-        navigate('/imports/detail/' + row.id);
+        navigate('/imports/detail/' + row.purchaseOrderId);
     }, []);
 
     // TABLE
     const [pending, setPending] = useState(true);
-    const [rows, setRows] = useState([]);
+    const [rows, setRows] = useState(null);
 
-    useEffect(() => {
-        const timeout = setTimeout(() => {
-            setRows(data3);
-            setPending(false);
-        }, 500);
-        return () => clearTimeout(timeout);
-    }, []);
+
 
     // MODAL LOADING
     const [loading, setLoading] = useState(false);
@@ -75,170 +86,200 @@ function InfoSupplier() {
 
     const handleValidation = () => {
         setLoading(true);
-        setTimeout(() => {
-            setLoading(false);
-            handleCloseModal();
-            toastContext.notify('success', 'Xóa nhà cung cấp thành công');
-        }, 2000);
+        const fetchApi = async () => {
+            // console.log(productid.id)
+            const result = await SuppliersServices.DeleteSupplier(suppliertid.id)
+                .catch((err) => {
+                    console.log(err);
+                });
+
+            if (result) {
+                setTimeout(() => {
+                    setLoading(false);
+                    handleCloseModal();
+                    toastContext.notify('success', 'Xóa nhà cung cấp thành công');
+                }, 2000);
+            }
+
+        }
+
+        fetchApi();
+
     };
 
     return (
         <div className={cx('wrapper')}>
-            <div className={cx('inner')}>
-                <div className={cx('content')}>
-                    <Wrapper
-                        title={'Thông tin nhà cung cấp'}
-                        className={cx('m-b')}
-                    >
-                        <div className={cx('twocols')}>
-                            <div className={cx('col1')}>
-                                <div className={cx('label', 'm-b')}>
-                                    <div className={cx('label-title')}>
-                                        Mã nhà cung cấp
+
+            {obj === null ? (
+                <Spinner animation="border" role="status">
+                    <span className="visually-hidden">Loading...</span>
+                </Spinner>
+            ) : (
+                <div className={cx('inner')}>
+                    <div className={cx('content')}>
+                        <Wrapper
+                            title={'Thông tin nhà cung cấp'}
+                            className={cx('m-b')}
+                        >
+                            <div className={cx('twocols')}>
+                                <div className={cx('col1')}>
+                                    <div className={cx('label', 'm-b')}>
+                                        <div className={cx('label-title')}>
+                                            Mã nhà cung cấp
+                                        </div>
+                                        <div className={cx('label-content')}>
+                                            {obj.supplierId}
+                                        </div>
                                     </div>
-                                    <div className={cx('label-content')}>
-                                        {supplier.id}
+                                    <div className={cx('label', 'm-b')}>
+                                        <div className={cx('label-title')}>
+                                            Tên nhà cung cấp
+                                        </div>
+                                        <div className={cx('label-content')}>
+                                            {obj.name}
+                                        </div>
                                     </div>
-                                </div>
-                                <div className={cx('label', 'm-b')}>
-                                    <div className={cx('label-title')}>
-                                        Tên nhà cung cấp
+                                    <div className={cx('label', 'm-b')}>
+                                        <div className={cx('label-title')}>
+                                            Nhóm nhà cung cấp
+                                        </div>
+                                        <div className={cx('label-content')}>
+                                            {obj.supplierGroupName}
+                                        </div>
                                     </div>
-                                    <div className={cx('label-content')}>
-                                        {supplier.name}
-                                    </div>
-                                </div>
-                                <div className={cx('label', 'm-b')}>
-                                    <div className={cx('label-title')}>
-                                        Nhóm nhà cung cấp
-                                    </div>
-                                    <div className={cx('label-content')}>
-                                        {supplier.group}
-                                    </div>
-                                </div>
-                                <div className={cx('label', 'm-b')}>
-                                    <div className={cx('label-title')}>
-                                        Tình trạng
-                                    </div>
-                                    <div className={cx('label-content', 'fit')}>
-                                        <div
-                                            className={cx({
-                                                'product-state-container': true,
-                                                'state-0': !supplier.isActive,
-                                            })}
-                                        >
-                                            <FontAwesomeIcon
-                                                className={cx(
-                                                    'product-state-icon',
-                                                )}
-                                                icon={
-                                                    supplier.isActive
-                                                        ? faCheck
-                                                        : faXmark
-                                                }
-                                            />
+                                    <div className={cx('label', 'm-b')}>
+                                        <div className={cx('label-title')}>
+                                            Tình trạng
+                                        </div>
+                                        <div className={cx('label-content', 'fit')}>
                                             <div
-                                                className={cx('product-state')}
+                                                className={cx({
+                                                    'product-state-container': true,
+                                                    'state-0': !obj.isActive,
+                                                })}
                                             >
-                                                {supplier.isActive
-                                                    ? 'Đang giao dịch'
-                                                    : 'Ngừng giao dịch'}
+                                                <FontAwesomeIcon
+                                                    className={cx(
+                                                        'product-state-icon',
+                                                    )}
+                                                    icon={
+                                                        obj.isActive
+                                                            ? faCheck
+                                                            : faXmark
+                                                    }
+                                                />
+                                                <div
+                                                    className={cx('product-state')}
+                                                >
+                                                    {obj.isActive
+                                                        ? 'Đang giao dịch'
+                                                        : 'Ngừng giao dịch'}
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
+                                <div className={cx('col2')}>
+                                    <div className={cx('label', 'm-b')}>
+                                        <div className={cx('label-title')}>
+                                            Số điện thoại
+                                        </div>
+                                        <div className={cx('label-content')}>
+                                            {obj.contact.phone}
+                                        </div>
+                                    </div>
+                                    <div className={cx('label', 'm-b')}>
+                                        <div className={cx('label-title')}>
+                                            Email
+                                        </div>
+                                        <div className={cx('label-content')}>
+                                            {obj.contact.email}
+                                        </div>
+                                    </div>
+                                    <div className={cx('label', 'm-b')}>
+                                        <div className={cx('label-title')}>
+                                            Địa chỉ
+                                        </div>
+                                        <div className={cx('label-content')}>
+                                            {obj.address}
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                            <div className={cx('col2')}>
-                                <div className={cx('label', 'm-b')}>
-                                    <div className={cx('label-title')}>
-                                        Số điện thoại
+                        </Wrapper>
+                        {
+                            rows === null ? (
+                                <div> </div>
+                            ) : (
+                                <Wrapper title={'Lịch sử nhập hàng'} className={cx('m-b')}>
+                                    <div className={cx('table-wrapper')}>
+                                        <Table
+                                            itemComponent={ImportItem}
+                                            data={rows}
+                                            pending={pending}
+                                            onRowClicked={onRowClicked}
+                                        />
                                     </div>
-                                    <div className={cx('label-content')}>
-                                        {supplier.phone}
-                                    </div>
-                                </div>
-                                <div className={cx('label', 'm-b')}>
-                                    <div className={cx('label-title')}>
-                                        Email
-                                    </div>
-                                    <div className={cx('label-content')}>
-                                        {supplier.email}
-                                    </div>
-                                </div>
-                                <div className={cx('label', 'm-b')}>
-                                    <div className={cx('label-title')}>
-                                        Địa chỉ
-                                    </div>
-                                    <div className={cx('label-content')}>
-                                        {supplier.address}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </Wrapper>
-                    <Wrapper title={'Lịch sử nhập hàng'} className={cx('m-b')}>
-                        <div className={cx('table-wrapper')}>
-                            <Table
-                                itemComponent={ImportItem}
-                                data={rows}
-                                pending={pending}
-                                onRowClicked={onRowClicked}
-                            />
-                        </div>
-                    </Wrapper>
-                </div>
-
-                <div className={cx('action')}>
-                    <Button outlineBlue onClick={handleExit}>
-                        Thoát
-                    </Button>
-                    <Button
-                        solidRed
-                        className={cx('margin')}
-                        onClick={handleOpenModal}
-                    >
-                        Xóa
-                    </Button>
-                    <Button
-                        solidBlue
-                        className={cx('margin')}
-                        onClick={() =>
-                            navigate('/suppliers/update/' + 'NCC0001')
+                                </Wrapper>
+                            )
                         }
-                    >
-                        Sửa
-                    </Button>
-                </div>
-            </div>
+                    </div>
 
-            <ModalComp
-                open={openModal}
-                handleClose={handleCloseModal}
-                title={'Xóa nhà cung cấp'}
-                actionComponent={
-                    <div>
-                        <Button
-                            className={cx('btn-cancel')}
-                            outlineRed
-                            onClick={handleCloseModal}
-                        >
-                            Hủy
+                    <div className={cx('action')}>
+                        <Button outlineBlue onClick={handleExit}>
+                            Thoát
                         </Button>
                         <Button
-                            className={cx('btn-ok', 'm-l-10')}
                             solidRed
-                            onClick={handleValidation}
+                            className={cx('margin')}
+                            onClick={handleOpenModal}
                         >
                             Xóa
                         </Button>
+                        <Button
+                            solidBlue
+                            className={cx('margin')}
+                            onClick={() =>
+                                navigate('/suppliers/update/' + suppliertid.id)
+                            }
+                        >
+                            Sửa
+                        </Button>
                     </div>
-                }
-            >
-                <div className={cx('info')}>
-                    Bạn có chắc chắn muốn xóa nhà cung cấp
-                    <strong> {supplier.name}</strong>?
+                    <ModalComp
+                        open={openModal}
+                        handleClose={handleCloseModal}
+                        title={'Xóa nhà cung cấp'}
+                        actionComponent={
+                            <div>
+                                <Button
+                                    className={cx('btn-cancel')}
+                                    outlineRed
+                                    onClick={handleCloseModal}
+                                >
+                                    Hủy
+                                </Button>
+                                <Button
+                                    className={cx('btn-ok', 'm-l-10')}
+                                    solidRed
+                                    onClick={handleValidation}
+                                >
+                                    Xóa
+                                </Button>
+                            </div>
+                        }
+                    >
+                        <div className={cx('info')}>
+                            Bạn có chắc chắn muốn xóa nhà cung cấp
+                            <strong> {obj.name}</strong>?
+                        </div>
+                    </ModalComp>
                 </div>
-            </ModalComp>
+
+
+            )}
+
+
             <ModalLoading open={loading} title={'Đang tải'} />
         </div>
     );

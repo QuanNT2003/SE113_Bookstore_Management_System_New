@@ -2,7 +2,7 @@ import classNames from 'classnames/bind';
 import styles from './OrderItem.module.scss';
 
 const cx = classNames.bind(styles);
-const addCommas = (num) => num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+// const addCommas = (num) => num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 
 export const OrderItem = [
     {
@@ -11,7 +11,7 @@ export const OrderItem = [
         center: true,
         cell: (row) => (
             <div className={cx('font', 'id')} data-tag="allowRowEvents">
-                {row.id}
+                {row.salesOrderId}
             </div>
         ),
     },
@@ -22,7 +22,7 @@ export const OrderItem = [
         sortable: true,
         cell: (row) => (
             <div className={cx('font')} data-tag="allowRowEvents">
-                {row.dateCreated}
+                {row.createdAt}
             </div>
         ),
     },
@@ -41,7 +41,7 @@ export const OrderItem = [
         center: true,
         cell: (row) => (
             <div className={cx('font')} data-tag="allowRowEvents">
-                {addCommas(row.money)}
+                {row.totalAmount}
             </div>
         ),
     },

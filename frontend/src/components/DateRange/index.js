@@ -4,7 +4,7 @@ import Tippy from '@tippyjs/react/headless';
 import { DayPicker } from 'react-day-picker';
 import 'react-day-picker/dist/style.css';
 import { vi } from 'date-fns/locale';
-import { format } from 'date-fns';
+import { format, toDate } from 'date-fns';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCalendarDays } from '@fortawesome/free-solid-svg-icons';
 
@@ -12,19 +12,19 @@ import styles from './DateRange.module.scss';
 
 const cx = classNames.bind(styles);
 
-function DateRange({ className, title, dateString, setDateString, bottom }) {
+function DateRange({ className, title, dateString, setDateString, bottom, future }) {
     const [range, setRange] = useState({});
 
     const handleDateString = (range) => {
         setRange(range);
         if (range?.from) {
             if (!range.to) {
-                setDateString(format(range.from, 'dd/MM/yyyy'));
+                setDateString(format(range.from, 'MM/dd/yyyy'));
             } else if (range.to) {
                 setDateString(
-                    `${format(range.from, 'dd/MM/yyyy')} – ${format(
+                    `${format(range.from, 'MM/dd/yyyy')} – ${format(
                         range.to,
-                        'dd/MM/yyyy',
+                        'MM/dd/yyyy',
                     )}`,
                 );
             }
@@ -39,6 +39,17 @@ function DateRange({ className, title, dateString, setDateString, bottom }) {
     const classes = cx('date-range-container', {
         [className]: className,
     });
+
+    const props = {
+        toDate: new Date(),
+    }
+
+    if (future) {
+        const currentTime = new Date();
+        props.toYear = currentTime.getFullYear() + 10;
+        delete props.toDate;
+        console.log(props);
+    }
 
     return (
         <div className={classes}>
@@ -62,8 +73,8 @@ function DateRange({ className, title, dateString, setDateString, bottom }) {
                                 onSelect={handleDateString}
                                 captionLayout="dropdown-buttons"
                                 fromYear={1800}
-                                toDate={new Date()}
                                 showOutsideDays
+                                {...props}
                             />
                         </div>
                     </div>

@@ -6,7 +6,7 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
 import { NavLink } from 'react-router-dom';
-import { useState, useEffect } from 'react';
+import { useEffect, useState, useContext } from 'react';
 import { data } from './data';
 import Spinner from 'react-bootstrap/Spinner';
 import Pagination from 'react-bootstrap/Pagination';
@@ -14,8 +14,12 @@ import Form from 'react-bootstrap/Form';
 import { FaDownload } from "react-icons/fa6";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Modal from 'react-bootstrap/Modal';
+import { ToastContext } from '~/components/ToastContext';
+import ModalLoading from '~/components/ModalLoading';
 const cx = classNames.bind(styles);
 function InfoCheckProduct() {
+    const toastContext = useContext(ToastContext);
+    const [loading, setLoading] = useState(false);
     const checkproductid = useParams()
     const [obj, setObj] = useState(null)
     const [list, setList] = useState([])
@@ -24,23 +28,7 @@ function InfoCheckProduct() {
         setList(data.list)
     });
 
-    const [PerPage, setPerPage] = useState(20);
-    const [currentPage, setcurrentPage] = useState(1);
 
-    const numofTotalPage = Math.ceil(list.length / PerPage);
-    const pages = [...Array(numofTotalPage + 1).keys()].slice(1);
-
-    const indexOflastPd = currentPage * PerPage;
-    const indexOffirstPd = indexOflastPd - PerPage;
-
-    const visible = list.slice(indexOffirstPd, indexOflastPd);
-    const prevPage = () => {
-        if (currentPage !== 1) setcurrentPage(currentPage - 1);
-    }
-
-    const nextPage = () => {
-        if (currentPage !== numofTotalPage) setcurrentPage(currentPage + 1);
-    }
 
     const [show, setShow] = useState(false);
     const handleClose = () => {
@@ -51,6 +39,29 @@ function InfoCheckProduct() {
 
     const submit = () => {
         handleClose()
+    }
+
+    const submitform = () => {
+
+        setLoading(true);
+        setTimeout(() => {
+            const newobj = obj
+            newobj.status = 1
+            setObj(newobj)
+            setLoading(false);
+            toastContext.notify('success', 'Đã cân bằng kho');
+        }, 2000);
+
+
+
+    }
+
+    const deleteform = () => {
+        setLoading(true);
+        setTimeout(() => {
+            setLoading(false);
+            toastContext.notify('success', 'Đã xóa phiếu');
+        }, 2000);
     }
     return (
         <div className={cx('wrapper')}>
@@ -93,9 +104,9 @@ function InfoCheckProduct() {
                                     </div>
                                     <div className={cx('list-import')}>
                                         {
-                                            visible.map((item, index) => (
+                                            list.map((item, index) => (
                                                 <div className={`${cx('item')}`} key={item.id}>
-                                                    <div className={cx('columns-1')}>{index + (currentPage - 1) * PerPage + 1}</div>
+                                                    <div className={cx('columns-1')}>{index + 1}</div>
                                                     <div className={cx('columns-1')}><img src={item.img} className={cx('img')} /></div>
                                                     <div className={cx('columns-2')}>
                                                         <div className='fs-6'>{item.name}</div>
@@ -111,52 +122,20 @@ function InfoCheckProduct() {
 
 
                                 </div>
-                                <Row className='mt-3 me-3'>
-                                    <Col xs md={8} className='d-flex  justify-content-end'>
 
-                                        <p className='mt-2 me-2'>Hiển thị</p>
-                                        <Form.Select aria-label="Default select example" placeholder='Loai san pham' className={cx('form-select')}
-                                            onChange={(e) => {
-                                                setPerPage(parseInt(e.target.value))
-                                                setcurrentPage(1)
-                                            }}>
-
-                                            <option value="20">20</option>
-                                            <option value="50">50</option>
-                                            <option value="100">100</option>
-                                        </Form.Select>
-
-
-                                    </Col>
-                                    <Col xs md={4}>
-                                        <Pagination className=' justify-content-end'>
-                                            <Pagination.Prev onClick={prevPage} />
-                                            {
-                                                pages.map(page => (
-                                                    <Pagination.Item
-                                                        key={page}
-                                                        onClick={() => setcurrentPage(page)}
-                                                        className={(currentPage === page) ? "active" : ""}>
-                                                        {page}</Pagination.Item>
-                                                ))
-                                            }
-                                            <Pagination.Next onClick={nextPage} />
-                                        </Pagination>
-                                    </Col>
-                                </Row>
                                 {
                                     obj.status === 1 ? (<div>
 
                                     </div>) : (
                                         <Row>
                                             <Col className='mt-4 text-end me-4'>
-                                                <Button className={`m-1 ${cx('my-btn')}`} variant="outline-danger" >Xóa</Button>
+                                                <Button className={`m-1 ${cx('my-btn')}`} variant="outline-danger" onClick={() => deleteform()}>Xóa</Button>
                                                 <Button className={`m-1 ${cx('my-btn')}`} variant="outline-primary">
                                                     <NavLink to={"/checks/update/" + checkproductid.id} className={`text-decoration-none ${cx('nav-link')}`} >
                                                         Sửa
                                                     </NavLink>
                                                 </Button>
-                                                <Button className={`m-1 ${cx('my-btn')}`} variant="primary" >Cân bằng kho</Button>
+                                                <Button className={`m-1 ${cx('my-btn')}`} variant="primary" onClick={() => submitform()}>Cân bằng kho</Button>
 
                                             </Col>
                                         </Row>
@@ -187,6 +166,7 @@ function InfoCheckProduct() {
                         </Button>
                     </Modal.Footer>
                 </Modal>
+                <ModalLoading open={loading} title={'Đang tải'} />
             </div>
         </div >
     );

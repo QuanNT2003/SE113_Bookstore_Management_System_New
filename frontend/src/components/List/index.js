@@ -22,6 +22,13 @@ function List({
     subHeaderComponent,
     selectableRows,
     pagination,
+    clearSelectedRows,
+    // PAGINATION REMOTE
+    totalRows,
+    handlePerRowsChange,
+    handlePageChange,
+    // SORT REMOTE
+    handleSort,
 }) {
     return (
         <div className={cx('wrapper')}>
@@ -49,6 +56,13 @@ function List({
                         onRowClicked={onRowClicked}
                         selectableRows={selectableRows}
                         pagination={pagination}
+                        clearSelectedRows={clearSelectedRows}
+                        // PAGINATION REMOTE 
+                        totalRows={totalRows}
+                        handlePerRowsChange={handlePerRowsChange}
+                        handlePageChange={handlePageChange}
+                        // SORT REMOTE 
+                        handleSort={handleSort}
                     />
                 </div>
             </div>

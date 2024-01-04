@@ -1,6 +1,6 @@
 .container {
     height: 100vh;
-    background-image: url('../../assets/images/minimal-morning-landscape-8k-gx-scaled.jpg');
+    background-image: url('../../assets/images/login-background.jpg');
     background-repeat: no-repeat;
     background-size: cover;
     display: flex;
@@ -16,6 +16,7 @@
     align-items: center;
     display: flex;
     flex-direction: column;
+    min-height: 388px;
 }
 .logo {
     height: 20px;
@@ -44,11 +45,19 @@
     border: none;
     font-size: 14px;
     font-weight: 500;
-    color: #316396;
+    color: #263c51;
     text-indent: 16px;
 }
 .input-border {
-    background-image: url('../../assets/images/linear-gradient-text.jpg');
+    // background-image: url('../../assets/images/linear-gradient-text.jpg');
+    // background-color: #263c51;
+    background: rgb(2, 0, 36);
+    background: linear-gradient(
+        90deg,
+        rgba(2, 0, 36, 1) 0%,
+        rgba(42, 79, 91, 1) 43%,
+        rgba(0, 212, 255, 1) 100%
+    );
     background-repeat: no-repeat;
     background-size: cover;
     position: relative;
@@ -71,16 +80,25 @@
 }
 .login-btn {
     height: 10%;
-    width: 47%;
+    width: 150px;
     font-size: 15px;
     font-weight: 700;
     color: #fff;
-    background: url('../../assets/images/linear-gradient-text.jpg') lightgray
-        50%;
+    background: rgb(2, 0, 36);
+    background: linear-gradient(
+        90deg,
+        rgba(2, 0, 36, 1) 0%,
+        rgba(42, 79, 91, 1) 43%,
+        rgba(0, 212, 255, 1) 100%
+    );
     border-radius: 20px;
     border: none;
     margin-top: 20px;
     cursor: pointer;
+    &:hover {
+        border-radius: 8px;
+        transition: ease-out 0.2s;
+    }
 }
 .login-btn .login-btn:hover {
     box-sizing: border-box;
@@ -94,4 +112,63 @@
     .login-form {
         max-height: 30%;
     }
+}
+
+.red {
+    background: red;
+}
+.login-message {
+    color: red;
+}
+.changepass-content {
+    margin-top: 20px;
+    width: 85%;
+    // background-color: #007bff;
+    display: grid;
+    height: 40%;
+    grid-template-columns: 48% 48%;
+    grid-template-rows: 50% 50%;
+    grid-gap: 2%;
+}
+.grid-content {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+.grid-content p {
+    font-size: 14px;
+    height: fit-content;
+    width: 100%;
+}
+.text-inp {
+    width: 100%;
+    height: 45px;
+    border-radius: 4px;
+    border: 1px solid #c4ccde;
+    background: #fff;
+    text-indent: 10px;
+    font-size: 14px;
+    &:hover {
+        border-radius: 4px;
+        border: 1px solid #555555;
+        background: #fff;
+    }
+    &:focus {
+        border-radius: 4px;
+        border: 1px solid #007bff;
+        background: #fff;
+    }
+    outline: none;
+}
+.btn-cancel {
+    margin-right: 20px;
+}
+.m-b {
+    margin-bottom: 10px;
+}
+.renew-container {
+    display: flex;
+    flex-direction: column;
+    // justify-content: center;
+    align-items: center;
 }

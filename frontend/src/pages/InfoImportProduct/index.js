@@ -7,34 +7,74 @@ import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
 import { NavLink } from 'react-router-dom';
 import Properties from '~/components/Properties';
-import { data } from './data';
 import ListImportProduct from '~/components/ListImportProduct';
 import { useNavigate } from 'react-router-dom';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import Spinner from 'react-bootstrap/Spinner';
 import Modal from 'react-bootstrap/Modal';
+import * as PurchaseOrdersServices from '~/apiServices/purchaseorderServies';
+import ModalLoading from '~/components/ModalLoading';
+import { ToastContext } from '~/components/ToastContext';
 const cx = classNames.bind(styles);
 const addCommas = (num) => num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 function InfoImportProduct() {
+    const toastContext = useContext(ToastContext);
     const importid = useParams();
     let navigate = useNavigate();
     const [obj, setObj] = useState(null);
     const [showpaid, setShowpaid] = useState(false);
     const [paid, setPaid] = useState(0);
+    const [loading, setLoading] = useState(false);
 
     const handleClosepaid = () => setShowpaid(false);
     const handleShowpaid = () => setShowpaid(true);
     const handleSubmitpaid = () => {
         let newobj = obj;
-        newobj.paid = newobj.paid + paid;
-        newobj.unpaid = newobj.total - newobj.paid;
+        obj.paymentDetails.paidAmount = obj.paymentDetails.paidAmount + paid;
+        obj.paymentDetails.remainAmount = obj.totalAmount - obj.paymentDetails.paidAmount;
         setObj(newobj);
         console.log(obj);
         setShowpaid(false);
+        setLoading(true);
+        console.log(obj)
+        const fetchApi = async () => {
+            // console.log(productid.id)
+            const result = await PurchaseOrdersServices.UpdatePurchaseOrder(importid.id, obj)
+                .catch((err) => {
+                    console.log(err);
+                });
+            if (result) {
+                setTimeout(() => {
+                    setLoading(false);
+                    toastContext.notify('error', 'Lưu không thành công');
+                }, 2000);
+            }
+            else {
+                setTimeout(() => {
+                    setLoading(false);
+                    toastContext.notify('success', 'Đã lưu đơn');
+                }, 2000);
+            }
+        }
+
+        fetchApi();
     };
     useEffect(() => {
-        setObj(data);
-    }, [obj]);
+
+        const fetchApi = async () => {
+            // console.log(productid.id)
+            const result = await PurchaseOrdersServices.getPurchaseOrder(importid.id)
+                .catch((err) => {
+                    console.log(err);
+                });
+            setObj(result);
+            console.log(result)
+
+        }
+
+        fetchApi();
+
+    }, []);
     const v = [
         {
             id: 1,
@@ -73,7 +113,7 @@ function InfoImportProduct() {
                                                 to="/"
                                                 className="fs-5 text-decoration-none"
                                             >
-                                                A
+                                                {obj.supplierName}
                                             </NavLink>
                                         </p>
                                     </div>
@@ -109,20 +149,20 @@ function InfoImportProduct() {
                                 Tiền cần trả nhà cung cấp :{' '}
                                 <span className="fw-bold ms-1">
                                     {' '}
-                                    {addCommas(obj.total)}
+                                    {addCommas(obj.totalAmount ? obj.totalAmount : 0)}
                                 </span>
                             </Col>
                             <Col lg={4} className="mb-1">
                                 Đã trả :{' '}
                                 <span className="fw-bold ms-1">
                                     {' '}
-                                    {addCommas(obj.paid)}
+                                    {addCommas(obj.paymentDetails.paidAmount ? obj.paymentDetails.paidAmount : 0)}
                                 </span>
                             </Col>
                             <Col lg={4} className="mb-1">
                                 Còn phải trả :{' '}
                                 <span className="text-danger">
-                                    {addCommas(obj.unpaid)}
+                                    {addCommas(obj.paymentDetails.remainAmount ? obj.paymentDetails.remainAmount : 0)}
                                 </span>
                             </Col>
                         </Row>
@@ -131,7 +171,7 @@ function InfoImportProduct() {
                         <p className={` mb-5 ${cx('title')}`}>
                             Thông tin sản phẩm
                         </p>
-                        <ListImportProduct list={obj.list} />
+                        <ListImportProduct list={obj.items} />
                         <hr />
                         <Row>
                             <Col lg={7} className="mb-3">
@@ -144,7 +184,7 @@ function InfoImportProduct() {
                                         Số lượng
                                     </Col>
                                     <Col xs md lg={4} className="text-end pe-5">
-                                        {obj.list.length}
+                                        {obj.items.length}
                                     </Col>
                                 </Row>
 
@@ -153,7 +193,7 @@ function InfoImportProduct() {
                                         Tổng tiền
                                     </Col>
                                     <Col xs md lg={4} className="text-end pe-5">
-                                        {addCommas(obj.total)}
+                                        {addCommas(obj.totalAmount)}
                                     </Col>
                                 </Row>
                                 <Row className="mt-3">
@@ -161,11 +201,7 @@ function InfoImportProduct() {
                                         Chiết khấu
                                     </Col>
                                     <Col xs md lg={4} className="text-end pe-5">
-                                        {obj.typediscount ? (
-                                            <div>{obj.discount} %</div>
-                                        ) : (
-                                            <div>{addCommas(obj.discount)}</div>
-                                        )}
+                                        {addCommas(obj?.discountAmount)}
                                     </Col>
                                 </Row>
                                 <Row className="mt-3">
@@ -173,7 +209,7 @@ function InfoImportProduct() {
                                         Đã thanh toán
                                     </Col>
                                     <Col xs md lg={4} className="text-end pe-5">
-                                        {addCommas(obj.paid)}
+                                        {addCommas(obj.paymentDetails.paidAmount)}
                                     </Col>
                                 </Row>
                                 <hr className={cx('divider')} />
@@ -182,7 +218,7 @@ function InfoImportProduct() {
                                         Còn phải trả
                                     </Col>
                                     <Col xs md lg={4} className="text-end pe-5">
-                                        {addCommas(obj.unpaid)}
+                                        {addCommas(obj.paymentDetails.remainAmount)}
                                     </Col>
                                 </Row>
                             </Col>
@@ -236,8 +272,8 @@ function InfoImportProduct() {
                             type="number"
                             inputMode="numeric"
                             onChange={(e) => {
-                                if (e.target.value > obj.unpaid)
-                                    e.target.value = obj.unpaid;
+                                if (e.target.value > obj.paymentDetails.remainAmount)
+                                    e.target.value = obj.paymentDetails.remainAmount;
                                 else if (
                                     e.target.value < 0 ||
                                     e.target.value === ''
@@ -257,6 +293,7 @@ function InfoImportProduct() {
                     </Button>
                 </Modal.Footer>
             </Modal>
+            <ModalLoading open={loading} title={'Đang tải'} />
         </div>
     );
 }

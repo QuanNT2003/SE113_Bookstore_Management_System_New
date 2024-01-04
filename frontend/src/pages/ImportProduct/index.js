@@ -5,7 +5,7 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
 import { useNavigate } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useContext } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import SearchResult from '~/components/SearchResult';
 import MultiSelectModal from '~/components/MultiSelectModal';
@@ -15,16 +15,21 @@ import { NavLink } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Item_import from '~/components/Item_ImportProduct';
 import { FaBoxOpen } from "react-icons/fa";
-import { options, options2, options3 } from './data';
+import { ToastContext } from '~/components/ToastContext';
+import ModalLoading from '~/components/ModalLoading';
+import * as PurchaseOrdersServices from '~/apiServices/purchaseorderServies';
 const cx = classNames.bind(styles);
 const addCommas = (num) => num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 function ImportProduct() {
+    const toastContext = useContext(ToastContext);
+    const [loading, setLoading] = useState(false);
+
+
     let navigate = useNavigate();
     const [producer, set] = useState(
         null
     );
 
-    const [list, setList] = useState([])
     const [cost, setCost] = useState(0)
     const [arr, setarr] = useState([]);
     const [discount, setDiscount] = useState(0)
@@ -34,7 +39,7 @@ function ImportProduct() {
     const [total, setTotal] = useState(0)
     const [note, setNote] = useState('')
     const [nums, setNums] = useState(0)
-
+    const [supplierID, setSupplierID] = useState([])
     const v = [
         {
             id: 1,
@@ -55,7 +60,8 @@ function ImportProduct() {
 
     const setproducer = (value) => {
         set(value)
-        setList(options2)
+        setSupplierID([])
+        setSupplierID((item) => [...item, value.supplierId])
 
     }
 
@@ -69,13 +75,13 @@ function ImportProduct() {
             return false;
         });
         const obj = {
-            id: value.id,
+            productId: value.productId,
             sku: value.sku,
             name: value.name,
-            img: value.img,
-            cost: value.cost,
-            nums: 0,
-            total: 0,
+            featureImageUrl: value.images[0],
+            purchasePrice: value.purchasePrice,
+            orderQuantity: 0,
+            totalPrice: 0,
         }
 
         if (isFound === false) {
@@ -85,16 +91,16 @@ function ImportProduct() {
     }
 
 
-    const deletearr = (id, index) => {
-        let newcost = cost - arr[index - 1]['total'];
-        let newnums = nums - arr[index - 1]['nums']
+    const deletearr = (productId, index) => {
+        let newcost = cost - arr[index - 1]['totalPrice'];
+        let newnums = nums - arr[index - 1]['orderQuantity']
         setCost(newcost)
         setNums(newnums)
 
         if (typediscount === true) setTotal(newcost * (1 - discount / 100))
         else setTotal(newcost - discount)
 
-        setarr(arr.filter(items => items.id !== id));
+        setarr(arr.filter(items => items.productId !== productId));
 
 
     }
@@ -113,8 +119,8 @@ function ImportProduct() {
         let newnums = 0;
         if (arr.length !== 0) {
             arr.map(item => {
-                newcost += item.total
-                newnums += item.nums
+                newcost += item.totalPrice
+                newnums += item.orderQuantity
             })
         }
 
@@ -127,21 +133,84 @@ function ImportProduct() {
     }
 
     const submit = () => {
-        const value = {
-            producer: producer,
-            nums: nums,
-            discount: discount,
-            paid: paid,
-            total: total,
-            unpaid: (total - paid) < 0 ? 0 : (total - paid),
-            list_product: arr,
-            note: note,
-            status: total - paid === 0 ? true : false,
+        if (producer === null) {
+            setLoading(true);
+            setTimeout(() => {
+                setLoading(false);
+                toastContext.notify('error', 'Chưa chọn nhà sản xuất');
+            }, 2000);
+        }
+        else if (arr.length === 0) {
+            setLoading(true);
+            setTimeout(() => {
+                setLoading(false);
+                toastContext.notify('error', 'Chưa chọn sản phẩm');
+            }, 2000);
+        }
+        else {
+
+            setLoading(true);
+            const obj = {
+                supplierId: producer.supplierId,
+                supplierName: producer.name,
+                items: arr,
+                subTotal: cost,
+                // discount: typediscount === true ? cost * discount / 100 : discount,
+                totalAmount: total,
+                discountItems: [
+                    {
+                        rate: typediscount === true ? discount : 0,
+                        value: typediscount === false ? discount : 0,
+                    }
+                ],
+                discountRate: typediscount === true ? discount : 0,
+                discountValue: typediscount === false ? discount : 0,
+                discountAmount: typediscount === true ? cost * discount / 100 : discount,
+                paymentDetails: {
+                    remainAmount: (total - paid) < 0 ? 0 : (total - paid),
+                    paidAmount: paid,
+                    paymentMethod: ''
+                },
+                note: note,
+                status: ''
+            }
+            console.log(obj)
+
+            const fetchApi = async () => {
+                const result = await PurchaseOrdersServices.CreatePurchaseOrder(obj)
+                    .catch((err) => {
+                        console.log(err);
+                    });
+
+                if (result) {
+
+                    setTimeout(() => {
+                        setLoading(false);
+                        toastContext.notify('success', 'Đã nhập hàng');
+                        console.log(result)
+                        navigate('/imports/detail/' + result.purchaseOrderId);
+                    }, 2000);
+                }
+                else {
+                    setTimeout(() => {
+                        setLoading(false);
+                        toastContext.notify('error', 'Không thành công');
+                    }, 2000);
+                }
+            }
+
+            fetchApi();
 
         }
-        console.log(value)
+
     }
 
+
+    useEffect(() => {
+
+
+
+    }, []);
 
     return (
         <div className={cx('wrapper')}>
@@ -151,7 +220,7 @@ function ImportProduct() {
                     {
                         producer === null ? (
                             <div>
-                                <SearchResult setValue={setproducer} stypeid={0} list={options} />
+                                <SearchResult setValue={setproducer} stypeid={0} />
 
                                 <div className={cx('no-info')}>
                                     <p className='text-center w-100'>Chưa có thông tin nhà cung cấp</p>
@@ -172,9 +241,19 @@ function ImportProduct() {
                                                 </NavLink>
                                             </p>
                                             <FaDeleteLeft onClick={(e) => {
-                                                set(null)
-                                                setList([])
-                                                setarr([])
+                                                setLoading(true);
+                                                setTimeout(() => {
+                                                    setLoading(false);
+                                                    set(null)
+                                                    setSupplierID([])
+                                                    setarr([])
+                                                    setNums(0)
+                                                    setCost(0)
+                                                    setTotal(0)
+                                                    setPaid(0)
+                                                    setDiscount(0)
+                                                }, 1000);
+
 
                                             }} className={cx('icon')} />
                                         </div>
@@ -195,13 +274,20 @@ function ImportProduct() {
 
                 <div className={cx('frame')}>
                     <p className={cx('title')}>Thông tin sản phẩm</p>
-                    <div className='d-flex'>
-                        <div className='flex-grow-1'><SearchResult stypeid={1} setValue={addarr} list={list} /></div>
+                    <Row>
+                        <Col md={10} lg={10} className='p-0'>
+                            <SearchResult stypeid={1} setValue={addarr} supplierID={producer === null ? '' : supplierID} />
+                        </Col>
 
-                        <MultiSelectModal funtion={handleMultiSelected} list={list} />
+                        <Col md={2} lg={2} className='p-0'>
+                            <MultiSelectModal funtion={handleMultiSelected} supplierID={producer === null ? '' : supplierID} />
+                        </Col>
+
+                    </Row>
 
 
-                    </div>
+
+
 
                     <div className={`${cx('import-content')}`} >
                         <div className={cx('columns')}>
@@ -222,7 +308,7 @@ function ImportProduct() {
                                     </div>
                                 ) : (
                                     arr.map((item, index) => (
-                                        <div key={item.id}>
+                                        <div key={index}>
                                             <Item_import product={item} index={index + 1} funtion={deletearr} update={update} />
 
                                         </div>
@@ -276,7 +362,7 @@ function ImportProduct() {
                             <Row className='mt-3'>
 
                                 <Col xs md lg={8} className={cx('on_click')}>
-                                    <span onClick={() => setOpen(!open)}>
+                                    <span onClick={() => setOpen(!open)} className='fw-bold text-primary'>
                                         Chiết khấu
                                     </span>
 
@@ -293,12 +379,13 @@ function ImportProduct() {
                                                     setDiscount(0)
                                                     setTotal(cost)
                                                 }}>Giá trị</Button>
-                                                <input className={`ms-3 me-5 w-25 ${cx('textfield')}`} value={discount} type="number" min={0} max={100} onChange={(e) => {
+                                                <input className={`ms-3 me-5 w-50 ${cx('textfield')}`} value={discount} type="number" min={0} max={100} onChange={(e) => {
 
                                                     if (typediscount === true) {
                                                         if (e.target.value > 100) e.target.value = 100;
                                                         else if (e.target.value < 0) e.target.value = 0;
                                                         setTotal(cost * (1 - e.target.value / 100))
+
                                                     }
 
                                                     else {
@@ -318,7 +405,7 @@ function ImportProduct() {
                                     }
                                 </Col>
                                 <Col xs md lg={4} className='text-end pe-5'>
-                                    {typediscount === true ? discount : addCommas(discount)}
+                                    {typediscount === true ? discount + '%' : addCommas(discount) + 'đ'}
                                 </Col>
                             </Row>
                             <Row className='mt-3'>
@@ -337,12 +424,10 @@ function ImportProduct() {
                                     Thanh toán nhà cung cấp
                                 </Col>
                                 <Col xs md lg={4} className='text-end pe-5'>
-                                    <input className={`${cx('textfield')} `} type="number" inputMode="numeric" onChange={(e) => {
-
+                                    <input className={`${cx('textfield')} `} type="number" inputMode="numeric" value={paid} onChange={(e) => {
                                         if (e.target.value > total) e.target.value = total;
                                         else if (e.target.value < 0 || e.target.value === '') e.target.value = 0;
                                         setPaid(parseInt(e.target.value))
-
                                     }} />
                                 </Col>
                             </Row>
@@ -374,7 +459,7 @@ function ImportProduct() {
             </div>
 
 
-
+            <ModalLoading open={loading} title={'Đang tải'} />
         </div >
     );
 }
