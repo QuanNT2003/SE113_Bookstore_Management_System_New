@@ -31,6 +31,6 @@ jobs:
         working-directory: ./frontend
 
       - name: Build application
-        run: npm start # Replace with your build command
+        run: npm run build # Replace with your build command
         working-directory: ./frontend
 
