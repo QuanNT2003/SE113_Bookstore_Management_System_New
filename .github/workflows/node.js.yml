@@ -30,7 +30,3 @@ jobs:
         run: npm test
         working-directory: ./frontend
 
-      - name: Build application
-        run: npm run build # Replace with your build command
-        working-directory: ./frontend
-
