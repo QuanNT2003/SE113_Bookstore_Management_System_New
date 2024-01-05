@@ -1,0 +1,24 @@
+{
+  "files": {
+    "main.css": "/static/css/main.fd804de5.css",
+    "main.js": "/static/js/main.bbb1f7f0.js",
+    "static/js/787.882e13bf.chunk.js": "/static/js/787.882e13bf.chunk.js",
+    "static/media/login-background.jpg": "/static/media/login-background.d57abedc2e6bc99c94e4.jpg",
+    "static/media/minimal-morning-landscape-8k-gx-scaled.jpg": "/static/media/minimal-morning-landscape-8k-gx-scaled.ba6852e19fe6dda20332.jpg",
+    "static/media/profile-bg.jpg": "/static/media/profile-bg.2f139b7919abc9388a0c.jpg",
+    "static/media/bg_img.svg": "/static/media/bg_img.ec49406156e3fb69d9ff.svg",
+    "static/media/slick.svg": "/static/media/slick.2630a3e3eab21c607e21.svg",
+    "static/media/slick.eot": "/static/media/slick.a4e97f5a2a64f0ab1323.eot",
+    "static/media/slick.ttf": "/static/media/slick.c94f7671dcc99dce43e2.ttf",
+    "static/media/slick.woff": "/static/media/slick.295183786cd8a1389865.woff",
+    "index.html": "/index.html",
+    "static/media/AppLogo.svg": "/static/media/AppLogo.1f80dcc32d6840b4cb8aa31cbb9ee072.svg",
+    "main.fd804de5.css.map": "/static/css/main.fd804de5.css.map",
+    "main.bbb1f7f0.js.map": "/static/js/main.bbb1f7f0.js.map",
+    "787.882e13bf.chunk.js.map": "/static/js/787.882e13bf.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.fd804de5.css",
+    "static/js/main.bbb1f7f0.js"
+  ]
+}
