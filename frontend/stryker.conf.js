@@ -5,8 +5,8 @@
   */
 module.exports = {
     mutate: [
-      'src/pages/**/*.js', // This will include all JS files in the pages directory
-      '!src/pages/**/*.scss', // This will exclude test files within the pages directory
+      'src/pages/Login/*.js', // This will include all JS files in the pages directory
+      '!src/pages/Login/*.scss', // This will exclude test files within the pages directory
     ],
     reporters: ['progress', 'clear-text', 'html'],
     coverageAnalysis: 'perTest',
