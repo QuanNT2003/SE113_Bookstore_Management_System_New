@@ -5,8 +5,6 @@
   "dependencies": {
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
-    "@stryker-mutator/core":"8.0.0",
-    "@stryker-mutator/jest-runner":"8.0.0",
     "@fortawesome/fontawesome-svg-core": "^6.4.2",
     "@fortawesome/free-brands-svg-icons": "^6.4.2",
     "@fortawesome/free-regular-svg-icons": "^6.4.2",
@@ -50,6 +48,9 @@
     "web-vitals": "^2.1.4"
   },
   "devDependencies": {
+    "@stryker-mutator/core": "^8.0.0",
+    "@stryker-mutator/html-reporter": "^3.1.0",
+    "@stryker-mutator/jest-runner": "^8.0.0",
     "babel-plugin-module-resolver": "^5.0.0",
     "customize-cra": "^1.0.0",
     "html5-qrcode": "^2.3.8",
