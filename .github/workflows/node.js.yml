@@ -8,25 +8,46 @@ on:
 
 jobs:
   build-and-deploy:
-    runs-on: ubuntu-latest
-
+    runs-on: ${{ matrix.os }}
+    
     strategy:
+      fail-fast: false
       matrix:
-        node-version: [14.x]
+        node-version: [ 14.x, 16.x , 18.x]
+        os: [ubuntu-latest, windows-latest, macos-latest]
 
     steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+
+    - name: Install dependencies
+      run: npm install
+      working-directory: ./frontend
+
+    - name: Run tests
+      run: npm test
+      working-directory: ./frontend
+  mutation-test:
+   runs-on: ubuntu-latest
+
+   steps:
       - uses: actions/checkout@v2
 
       - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: '14'
+          node-version: '14.x' # You can choose the version that you prefer
+          cache: 'npm'
 
       - name: Install dependencies
         run: npm install
         working-directory: ./frontend
 
-      - name: Run tests
-        run: npm test
+      - name: Run Stryker
+        run: npx stryker run
         working-directory: ./frontend
-
