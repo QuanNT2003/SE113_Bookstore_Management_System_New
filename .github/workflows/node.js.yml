@@ -48,6 +48,9 @@ jobs:
         run: npm install
         working-directory: ./frontend
         
+      - name: Install stryker
+        run: npx stryker init
+        working-directory: ./frontend
         
       - name: Run Stryker
         run: npx stryker run
